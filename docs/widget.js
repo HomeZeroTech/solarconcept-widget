@@ -21245,7 +21245,7 @@ function dk() {
     };
     console.log("Submitting Form:", te);
     try {
-      const ye = await fetch("https://pico-accp.homezero.nl/rest/pico/v1/", {
+      const ye = await fetch("https://pico-accp.homezero.nl/rest/pico/v1/assignments/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
