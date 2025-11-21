@@ -15,6 +15,7 @@ function App() {
     selectedProducts: [],
     postal: '',
     houseNumber: '',
+    houseNumberAddition: '', // Optional addition
     email: '',
     phone: '',
   });
@@ -93,6 +94,7 @@ function App() {
       HouseDetails: {
         Zipcode: formData.postal,
         Housenumber: formData.houseNumber,
+        HouseNumberAddition: formData.houseNumberAddition,
         Country: "NL"
       },
       // Putting measures in Note1 as requested
@@ -106,6 +108,7 @@ function App() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'X-API-Key': 'kK89meKETzU8SBVwKpt7qpBUiutEmUrh'
         },
         body: JSON.stringify(payload)
       });
@@ -120,7 +123,7 @@ function App() {
       alert('Bedankt! Je aanvraag is verstuurd.');
     } catch (error) {
       console.error('Submission failed:', error);
-      alert('Er is iets misgegaan. Probeer het later opnieuw.');
+      alert('Er is iets misgegaan. Probeer het later opnieuw of doe een normale huisscan op onze website.');
     } finally {
       setIsSubmitting(false);
     }
@@ -154,33 +157,41 @@ function App() {
   );
 
   // Step 2: Product Interest
-  const renderStep2 = () => (
-    <div className="fade-in">
-      <h2 className="sc-title">In welke producten heb je interesse?</h2>
-      <div className="sc-grid">
-        {PRODUCTS.map(p => (
-          <div
-            key={p.id}
-            className={`sc-tile ${formData.selectedProducts.includes(p.id) ? 'active' : ''}`}
-            onClick={() => handleProductToggle(p.id)}
-          >
-            <div className="sc-tile-content">
-              <img src={p.icon} alt={p.label} className="sc-tile-icon" />
-              <span className="sc-tile-label">{p.label}</span>
-            </div>
-            {formData.selectedProducts.includes(p.id) && (
-              <div className="sc-check-badge">
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M10 3L4.5 8.5L2 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+  const renderStep2 = () => {
+    // Filter products: Hide 'zonnepanelen' if user already has them (hasSolar === true)
+    const visibleProducts = PRODUCTS.filter(p => {
+      if (formData.hasSolar === true && p.id === 'zonnepanelen') return false;
+      return true;
+    });
+
+    return (
+      <div className="fade-in">
+        <h2 className="sc-title">In welke producten heb je interesse?</h2>
+        <div className="sc-grid">
+          {visibleProducts.map(p => (
+            <div
+              key={p.id}
+              className={`sc-tile ${formData.selectedProducts.includes(p.id) ? 'active' : ''}`}
+              onClick={() => handleProductToggle(p.id)}
+            >
+              <div className="sc-tile-content">
+                <img src={p.icon} alt={p.label} className="sc-tile-icon" />
+                <span className="sc-tile-label">{p.label}</span>
               </div>
-            )}
-          </div>
-        ))}
+              {formData.selectedProducts.includes(p.id) && (
+                <div className="sc-check-badge">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 3L4.5 8.5L2 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+        {errors.selectedProducts && <div className="sc-error-msg" style={{ textAlign: 'center', marginTop: '12px' }}>{errors.selectedProducts}</div>}
       </div>
-      {errors.selectedProducts && <div className="sc-error-msg" style={{ textAlign: 'center', marginTop: '12px' }}>{errors.selectedProducts}</div>}
-    </div>
-  );
+    );
+  };
 
   // Step 3: Contact Details
   const renderStep3 = () => (
@@ -203,15 +214,26 @@ function App() {
         </div>
         <div className="sc-col">
           <div className="sc-form-group">
-            <label className="sc-label">Huisnummer</label>
-            <input
-              type="text"
-              className={`sc-input ${errors.houseNumber ? 'error' : ''}`}
-              value={formData.houseNumber}
-              onChange={(e) => handleUpdate('houseNumber', e.target.value)}
-              placeholder="10"
-            />
-            {errors.houseNumber && <div className="sc-error-msg">{errors.houseNumber}</div>}
+            <label className="sc-label">Huisnummer *</label>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <input
+                type="text"
+                className={`sc-input ${errors.houseNumber ? 'error' : ''}`}
+                value={formData.houseNumber}
+                onChange={(e) => setFormData({ ...formData, houseNumber: e.target.value })}
+                placeholder="10"
+                style={{ flex: 1 }}
+              />
+              <input
+                type="text"
+                className="sc-input"
+                value={formData.houseNumberAddition}
+                onChange={(e) => setFormData({ ...formData, houseNumberAddition: e.target.value })}
+                placeholder="Toev."
+                style={{ width: '80px' }}
+              />
+            </div>
+            {errors.houseNumber && <span className="sc-error-text">{errors.houseNumber}</span>}
           </div>
         </div>
       </div>
