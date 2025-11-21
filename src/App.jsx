@@ -26,7 +26,14 @@ function App() {
   const progress = (step / 3) * 100;
 
   const handleUpdate = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    let processedValue = value;
+
+    // Strip spaces from postal code and convert to uppercase
+    if (field === 'postal') {
+      processedValue = value.replace(/\s/g, '').toUpperCase();
+    }
+
+    setFormData(prev => ({ ...prev, [field]: processedValue }));
     // Clear error when user types
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: null }));
@@ -57,12 +64,25 @@ function App() {
 
   const validateStep3 = () => {
     const newErrors = {};
-    if (formData.postal.length < 4) newErrors.postal = 'Postcode moet minimaal 4 tekens bevatten.';
+    // Postcode validation: 4 digits + 2 letters (1234AB format)
+    const postalPattern = /^[0-9]{4}[A-Z]{2}$/;
+    if (!postalPattern.test(formData.postal)) {
+      newErrors.postal = 'Postcode moet 4 cijfers gevolgd door 2 letters zijn (bijv. 1234AB).';
+    }
     if (!formData.houseNumber) newErrors.houseNumber = 'Huisnummer is verplicht.';
     if (!formData.email.includes('@') || !formData.email.includes('.')) newErrors.email = 'Ongeldig e-mailadres.';
-    // Remove non-digits/chars for length check
-    const cleanPhone = formData.phone.replace(/[^0-9+]/g, '');
-    if (cleanPhone.length < 8) newErrors.phone = 'Telefoonnummer moet minimaal 8 cijfers bevatten.';
+
+    // Phone validation: only numbers and "+", min 10 digits, max 13 digits
+    const phoneDigits = formData.phone.replace(/[^0-9]/g, ''); // Count only digits
+    const hasInvalidChars = /[^0-9+]/.test(formData.phone); // Check for invalid characters
+
+    if (hasInvalidChars) {
+      newErrors.phone = 'Telefoonnummer mag alleen cijfers en + bevatten.';
+    } else if (phoneDigits.length < 10) {
+      newErrors.phone = 'Telefoonnummer moet minimaal 10 cijfers bevatten.';
+    } else if (phoneDigits.length > 13) {
+      newErrors.phone = 'Telefoonnummer mag maximaal 13 cijfers bevatten.';
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -114,16 +134,25 @@ function App() {
       });
 
       if (!response.ok) {
+        const errorData = await response.json().catch(() => ({})); // Try to parse JSON error
+        if (errorData.error === "Could not find a building with this address") {
+          throw new Error("AddressNotFound");
+        }
         throw new Error(`API Error: ${response.statusText}`);
       }
 
-      const result = await response.json();
+      // Safely parse successful response
+      const result = await response.json().catch(() => null);
       console.log('API Success:', result);
 
       alert('Bedankt! Je aanvraag is verstuurd.');
     } catch (error) {
       console.error('Submission failed:', error);
-      alert('Er is iets misgegaan. Probeer het later opnieuw of doe een normale huisscan op onze website.');
+      if (error.message === "AddressNotFound") {
+        alert('We konden geen gebouw vinden op dit adres. Controleer je invoer of doe een normale huisscan op onze website.');
+      } else {
+        alert('Er is iets misgegaan. Probeer het later opnieuw of doe een normale huisscan op onze website.');
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -214,24 +243,27 @@ function App() {
         </div>
         <div className="sc-col">
           <div className="sc-form-group">
-            <label className="sc-label">Huisnummer *</label>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <input
-                type="text"
-                className={`sc-input ${errors.houseNumber ? 'error' : ''}`}
-                value={formData.houseNumber}
-                onChange={(e) => setFormData({ ...formData, houseNumber: e.target.value })}
-                placeholder="10"
-                style={{ flex: 1 }}
-              />
-              <input
-                type="text"
-                className="sc-input"
-                value={formData.houseNumberAddition}
-                onChange={(e) => setFormData({ ...formData, houseNumberAddition: e.target.value })}
-                placeholder="Toev."
-                style={{ width: '80px' }}
-              />
+              <div style={{ flex: 1 }}>
+                <label className="sc-label">Huisnummer</label>
+                <input
+                  type="text"
+                  className={`sc-input ${errors.houseNumber ? 'error' : ''}`}
+                  value={formData.houseNumber}
+                  onChange={(e) => setFormData({ ...formData, houseNumber: e.target.value })}
+                  placeholder="10"
+                />
+              </div>
+              <div style={{ width: '140px' }}>
+                <label className="sc-label">Toevoeging</label>
+                <input
+                  type="text"
+                  className="sc-input"
+                  value={formData.houseNumberAddition}
+                  onChange={(e) => setFormData({ ...formData, houseNumberAddition: e.target.value })}
+                  placeholder="Optioneel"
+                />
+              </div>
             </div>
             {errors.houseNumber && <span className="sc-error-text">{errors.houseNumber}</span>}
           </div>
@@ -305,7 +337,7 @@ function App() {
             So if it's in the footer, it needs to be handled carefully.
         */}
         {step === 3 && (
-          <div style={{ padding: '0 24px 24px 24px', backgroundColor: 'var(--sc-footer-bg)' }}>
+          <div style={{ padding: '0 24px 24px 24px' }}>
             <p className="sc-disclaimer">
               Binnen een paar minuten gratis en vrijblijvend in je mail! Het kan zijn dat we je bellen voor meer informatie. Zo kunnen we je het beste advies geven.
             </p>

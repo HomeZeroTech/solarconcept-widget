@@ -196,13 +196,13 @@
 
 /* Footer */
 .sc-footer {
-  background-color: var(--sc-footer-bg);
-  padding: 16px 24px;
+  padding: 24px;
+  background: transparent;
+  /* Removed yellow background */
+  border-top: 1px solid #f0f0f0;
   display: flex;
-  justify-content: flex-end;
-  /* Align next button to right */
+  justify-content: space-between;
   align-items: center;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .sc-footer.space-between {
