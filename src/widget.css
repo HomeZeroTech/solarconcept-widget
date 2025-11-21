@@ -332,3 +332,66 @@
     right: 16px;
   }
 }
+
+/* Success Screen */
+.sc-success-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+  min-height: 400px;
+}
+
+.sc-success-checkmark {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 24px;
+}
+
+.sc-checkmark-svg {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: block;
+  stroke-width: 2;
+  stroke: #4caf50;
+  stroke-miterlimit: 10;
+}
+
+.sc-checkmark-circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke: #4caf50;
+  animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.sc-checkmark-check {
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  stroke: #4caf50;
+  animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards;
+  stroke-width: 3;
+}
+
+@keyframes stroke {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.sc-success-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--sc-text);
+  margin: 0 0 16px 0;
+}
+
+.sc-success-message {
+  font-size: 16px;
+  color: #666;
+  line-height: 1.6;
+  max-width: 400px;
+  margin: 0;
+}

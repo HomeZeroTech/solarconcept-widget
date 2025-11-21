@@ -21,6 +21,7 @@ function App() {
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   // Progress calculation
   const progress = (step / 3) * 100;
@@ -145,7 +146,8 @@ function App() {
       const result = await response.json().catch(() => null);
       console.log('API Success:', result);
 
-      alert('Bedankt! Je aanvraag is verstuurd.');
+      // Show success animation instead of alert
+      setShowSuccess(true);
     } catch (error) {
       console.error('Submission failed:', error);
       if (error.message === "AddressNotFound") {
@@ -296,6 +298,22 @@ function App() {
     </div>
   );
 
+  // Success Screen
+  const renderSuccess = () => (
+    <div className="sc-success-screen fade-in">
+      <div className="sc-success-checkmark">
+        <svg viewBox="0 0 52 52" className="sc-checkmark-svg">
+          <circle className="sc-checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+          <path className="sc-checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+        </svg>
+      </div>
+      <h2 className="sc-success-title">Bedankt!</h2>
+      <p className="sc-success-message">
+        Je aanvraag is verstuurd. Binnen een paar minuten ontvang je een gratis en vrijblijvend aanbod in je mail!
+      </p>
+    </div>
+  );
+
   return (
     <div className="sc-widget-container">
       <div className="sc-card">
@@ -306,13 +324,17 @@ function App() {
 
         {/* Content */}
         <div className="sc-content">
-          {step === 1 && renderStep1()}
-          {step === 2 && renderStep2()}
-          {step === 3 && renderStep3()}
+          {showSuccess ? renderSuccess() : (
+            <>
+              {step === 1 && renderStep1()}
+              {step === 2 && renderStep2()}
+              {step === 3 && renderStep3()}
+            </>
+          )}
         </div>
 
         {/* Footer */}
-        {step > 1 && (
+        {step > 1 && !showSuccess && (
           <div className="sc-footer space-between">
             <button className="sc-btn sc-btn-back" onClick={handleBack}>
               Terug
@@ -336,7 +358,7 @@ function App() {
             Requirement: "MUST be displayed directly below the submit button"
             So if it's in the footer, it needs to be handled carefully.
         */}
-        {step === 3 && (
+        {step === 3 && !showSuccess && (
           <div style={{ padding: '0 24px 24px 24px' }}>
             <p className="sc-disclaimer">
               Binnen een paar minuten gratis en vrijblijvend in je mail! Het kan zijn dat we je bellen voor meer informatie. Zo kunnen we je het beste advies geven.
