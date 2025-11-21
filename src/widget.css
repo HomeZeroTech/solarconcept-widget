@@ -31,6 +31,10 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  height: 600px;
+  /* Fixed height for consistency */
+  position: relative;
+  /* Ensure containment */
 }
 
 /* Header / Progress */
@@ -50,8 +54,9 @@
 .sc-content {
   padding: 24px;
   flex: 1;
-  min-height: 480px;
-  /* Fixed height to prevent resizing */
+  /* min-height removed in favor of fixed card height */
+  overflow-y: auto;
+  /* Scroll if content exceeds space */
   display: flex;
   flex-direction: column;
 }
@@ -273,8 +278,20 @@
 
   .sc-content {
     padding: 16px;
-    min-height: auto;
-    /* Allow flexible height on mobile if needed, or keep fixed */
+    /* On mobile, we might want to allow it to be taller if needed, or keep fixed? 
+       User said "responsive depending on screen size". 
+       Usually fixed height on mobile is bad if screen is small. 
+       Let's use height: auto or min-height on mobile to fit viewport or content.
+    */
+    height: auto;
+    overflow-y: visible;
+  }
+
+  .sc-card {
+    height: auto;
+    /* Allow growth on mobile */
+    min-height: 600px;
+    /* But keep at least this tall? Or just auto? */
   }
 
   .sc-footer {

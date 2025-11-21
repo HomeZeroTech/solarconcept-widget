@@ -102,7 +102,7 @@ function App() {
     console.log('Submitting Form:', payload);
 
     try {
-      const response = await fetch('https://pico-accp.homezero.nl/rest/pico/v1/', {
+      const response = await fetch('https://pico-accp.homezero.nl/rest/pico/v1/assignments/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
