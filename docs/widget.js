@@ -21314,7 +21314,7 @@ function dk() {
       Be.selectedProducts && /* @__PURE__ */ Re.jsx("div", { className: "sc-error-msg", style: { textAlign: "center", marginTop: "12px" }, children: Be.selectedProducts })
     ] });
   }, Ae = () => /* @__PURE__ */ Re.jsxs("div", { className: "fade-in", children: [
-    /* @__PURE__ */ Re.jsx("h2", { className: "sc-title", children: "Waar mag je gratis aanbod naartoe?" }),
+    /* @__PURE__ */ Re.jsx("h2", { className: "sc-title", children: "Waar mag je aanbod heen?" }),
     /* @__PURE__ */ Re.jsxs("div", { className: "sc-row", children: [
       /* @__PURE__ */ Re.jsx("div", { className: "sc-col", children: /* @__PURE__ */ Re.jsxs("div", { className: "sc-form-group", children: [
         /* @__PURE__ */ Re.jsx("label", { className: "sc-label", children: "Postcode" }),

@@ -227,7 +227,7 @@ function App() {
   // Step 3: Contact Details
   const renderStep3 = () => (
     <div className="fade-in">
-      <h2 className="sc-title">Waar mag je gratis aanbod naartoe?</h2>
+      <h2 className="sc-title">Waar mag je aanbod heen?</h2>
 
       <div className="sc-row">
         <div className="sc-col">
