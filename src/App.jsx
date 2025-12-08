@@ -106,7 +106,7 @@ function App() {
     // Prepare data for final processing
     // Mapping to new API structure
     const payload = {
-      FlowID: "a6673227-7758-4ee0-ba07-20e41366b2bb",
+      FlowID: "ea3563dc-c12f-4420-960d-b660275db7ad",
       Email: formData.email,
       Phonenumber: formData.phone,
       EnergyUsage: {
@@ -125,11 +125,11 @@ function App() {
     console.log('Submitting Form:', payload);
 
     try {
-      const response = await fetch('https://pico-accp.homezero.nl/rest/pico/v1/assignments/create', {
+      const response = await fetch('https://pico.homezero.nl/rest/pico/v1/assignments/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-API-Key': 'kK89meKETzU8SBVwKpt7qpBUiutEmUrh'
+          'X-API-Key': 'hRxLOq1EK3VkSVFIFzD03qesWlALOWmZ'
         },
         body: JSON.stringify(payload)
       });
