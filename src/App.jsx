@@ -125,11 +125,11 @@ function App() {
     console.log('Submitting Form:', payload);
 
     try {
-      const response = await fetch('https://pico.homezero.nl/rest/pico/v1/assignments/create', {
+      const response = await fetch('https://pico-accp.homezero.nl/rest/pico/v1/assignments/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-API-Key': 'hRxLOq1EK3VkSVFIFzD03qesWlALOWmZ'
+          'X-API-Key': 'kK89meKETzU8SBVwKpt7qpBUiutEmUrh'
         },
         body: JSON.stringify(payload)
       });
