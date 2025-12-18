@@ -13,6 +13,8 @@ function App() {
   const [formData, setFormData] = useState({
     hasSolar: null,
     selectedProducts: [],
+    firstname: '',
+    lastname: '',
     postal: '',
     houseNumber: '',
     houseNumberAddition: '', // Optional addition
@@ -65,6 +67,10 @@ function App() {
 
   const validateStep3 = () => {
     const newErrors = {};
+
+    if (!formData.firstname) newErrors.firstname = 'Voornaam is verplicht.';
+    if (!formData.lastname) newErrors.lastname = 'Achternaam is verplicht.';
+
     // Postcode validation: 4 digits + 2 letters (1234AB format)
     const postalPattern = /^[0-9]{4}[A-Z]{2}$/;
     if (!postalPattern.test(formData.postal)) {
@@ -107,6 +113,8 @@ function App() {
     // Mapping to new API structure
     const payload = {
       FlowID: "ea3563dc-c12f-4420-960d-b660275db7ad",
+      Firstname: formData.firstname,
+      Lastname: formData.lastname,
       Email: formData.email,
       Phonenumber: formData.phone,
       EnergyUsage: {
@@ -228,6 +236,35 @@ function App() {
   const renderStep3 = () => (
     <div className="fade-in">
       <h2 className="sc-title">Waar mag je aanbod heen?</h2>
+
+      <div className="sc-row">
+        <div className="sc-col">
+          <div className="sc-form-group">
+            <label className="sc-label">Voornaam</label>
+            <input
+              type="text"
+              className={`sc-input ${errors.firstname ? 'error' : ''}`}
+              value={formData.firstname}
+              onChange={(e) => handleUpdate('firstname', e.target.value)}
+              placeholder="Jan"
+            />
+            {errors.firstname && <div className="sc-error-msg">{errors.firstname}</div>}
+          </div>
+        </div>
+        <div className="sc-col">
+          <div className="sc-form-group">
+            <label className="sc-label">Achternaam</label>
+            <input
+              type="text"
+              className={`sc-input ${errors.lastname ? 'error' : ''}`}
+              value={formData.lastname}
+              onChange={(e) => handleUpdate('lastname', e.target.value)}
+              placeholder="Jansen"
+            />
+            {errors.lastname && <div className="sc-error-msg">{errors.lastname}</div>}
+          </div>
+        </div>
+      </div>
 
       <div className="sc-row">
         <div className="sc-col">
