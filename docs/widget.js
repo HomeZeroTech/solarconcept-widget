@@ -21430,7 +21430,7 @@ function dk() {
       /* @__PURE__ */ ue.jsx("path", { className: "sc-checkmark-check", fill: "none", d: "M14.1 27.2l7.1 7.2 16.7-16.8" })
     ] }) }),
     /* @__PURE__ */ ue.jsx("h2", { className: "sc-success-title", children: "Bedankt!" }),
-    /* @__PURE__ */ ue.jsx("p", { className: "sc-success-message", children: "Je aanvraag is verstuurd. Binnen een paar minuten ontvang je een gratis en vrijblijvend aanbod in je mail!" })
+    /* @__PURE__ */ ue.jsx("p", { className: "sc-success-message", children: "Je hoort snel van ons." })
   ] });
   return /* @__PURE__ */ ue.jsx("div", { className: "sc-widget-container", children: /* @__PURE__ */ ue.jsxs("div", { className: "sc-card", children: [
     /* @__PURE__ */ ue.jsx("div", { className: "sc-progress-bar", children: /* @__PURE__ */ ue.jsx("div", { className: "sc-progress-fill", style: { width: `${de}%` } }) }),

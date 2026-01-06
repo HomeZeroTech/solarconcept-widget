@@ -346,7 +346,7 @@ function App() {
       </div>
       <h2 className="sc-success-title">Bedankt!</h2>
       <p className="sc-success-message">
-        Je aanvraag is verstuurd. Binnen een paar minuten ontvang je een gratis en vrijblijvend aanbod in je mail!
+        Je hoort snel van ons.
       </p>
     </div>
   );
