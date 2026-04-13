@@ -1,6 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import './widget.css';
 
+// --- UTM & Click ID extraction ---
+const UTM_PARAMS_MAP = {
+  utm_source: 'UtmSource',
+  utm_medium: 'UtmMedium',
+  utm_campaign: 'UtmCampaign',
+  utm_content: 'UtmContent',
+  utm_term: 'UtmTerm',
+  gclid: 'GCLID',
+  gbraid: 'GBRAID',
+  wbraid: 'WBRAID',
+  dclid: 'DCLID',
+  ttclid: 'TTCLID',
+  fbclid: 'FBCLID',
+  li_fat_id: 'LI_FAT_ID',
+  ad_id: 'AD_ID',
+};
+
+const getTrackingParams = () => {
+  const params = new URLSearchParams(window.location.search);
+  const tracking = {};
+  for (const [urlKey, apiKey] of Object.entries(UTM_PARAMS_MAP)) {
+    const value = params.get(urlKey);
+    if (value) tracking[apiKey] = value;
+  }
+  // Also capture the referral URL
+  if (document.referrer) {
+    tracking.ReferralURL = document.referrer;
+  }
+  return tracking;
+};
+
 const PRODUCTS = [
   { id: 'thuisbatterij', label: 'Thuisbatterij', icon: 'https://www.solarconcept.nl/images/algemeen/Icoon-thuisbatterij.svg' },
   { id: 'zonnepanelen', label: 'Zonnepanelen', icon: 'https://www.solarconcept.nl/images/algemeen/Icoon-zonnepanelen.svg' },
@@ -24,6 +55,9 @@ function App() {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  // Capture UTM & tracking params once on mount
+  const [trackingData] = useState(() => getTrackingParams());
 
   // Progress calculation
   const progress = (step / 3) * 100;
@@ -117,6 +151,7 @@ function App() {
       Lastname: formData.lastname,
       Email: formData.email,
       Phonenumber: formData.phone,
+      ...trackingData, // UTM params, click IDs & ReferralURL
       EnergyUsage: {
         HasSolarPanels: formData.hasSolar ? "Yes" : "No"
       },
