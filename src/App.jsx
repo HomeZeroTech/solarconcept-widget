@@ -39,6 +39,13 @@ const PRODUCTS = [
   { id: 'groepenkast', label: 'Groepenkast', icon: 'https://www.solarconcept.nl/images/algemeen/Icoon-groepenkast.svg' },
 ];
 
+const PRODUCT_FLOW_MAP = {
+  zonnepanelen: '9d9fc9e3-64a6-4cfc-83af-5bfc062fc21d',
+  thuisbatterij: 'dc730492-87f6-41de-a97c-9d1ce279ed93',
+  groepenkast: '8251df8d-242f-4349-922b-d28196c73223',
+  laadpaal: '1f49c5e2-79b5-47b1-a507-77b1b7747036',
+};
+
 function App() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -143,6 +150,12 @@ function App() {
 
     setIsSubmitting(true);
 
+    const DEBUG_PAYLOAD_ONLY = false; // ← zet op false vóór build & push
+
+    const flowsInterestedIn = formData.selectedProducts
+      .filter(id => PRODUCT_FLOW_MAP[id])
+      .map(id => ({ FlowID: PRODUCT_FLOW_MAP[id] }));
+
     // Prepare data for final processing
     // Mapping to new API structure
     const payload = {
@@ -162,10 +175,17 @@ function App() {
         Country: "NL"
       },
       // Putting measures in Note1 as requested
-      Note1: formData.selectedProducts.join(', ')
+      Note1: formData.selectedProducts.join(', '),
+      FlowsInterestedIn: flowsInterestedIn,
     };
 
     console.log('Submitting Form:', payload);
+
+    if (DEBUG_PAYLOAD_ONLY) {
+      console.log('DEBUG payload (geen API call):', payload);
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       const response = await fetch('https://pico.homezero.nl/rest/pico/v1/assignments/create', {
