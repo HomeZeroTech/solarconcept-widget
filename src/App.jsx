@@ -18,11 +18,16 @@ const UTM_PARAMS_MAP = {
   ad_id: 'AD_ID',
 };
 
+const getCookieValue = (name) => {
+  const match = document.cookie.split('; ').find(row => row.startsWith(name + '='));
+  return match ? decodeURIComponent(match.split('=').slice(1).join('=')) : null;
+};
+
 const getTrackingParams = () => {
   const params = new URLSearchParams(window.location.search);
   const tracking = {};
   for (const [urlKey, apiKey] of Object.entries(UTM_PARAMS_MAP)) {
-    const value = params.get(urlKey);
+    const value = params.get(urlKey) || getCookieValue(urlKey);
     if (value) tracking[apiKey] = value;
   }
   // Also capture the referral URL
