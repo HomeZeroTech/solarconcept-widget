@@ -5,7 +5,7 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build",
+        "build": "vite build && node scripts/minify-widget.js",
         "preview": "vite preview",
         "start": "vite"
     },
@@ -17,6 +17,7 @@
         "@types/react": "^18.2.66",
         "@types/react-dom": "^18.2.22",
         "@vitejs/plugin-react": "^4.2.1",
+        "esbuild": "^0.21.5",
         "vite": "^5.2.0",
         "vite-plugin-css-injected-by-js": "^3.5.1"
     }
