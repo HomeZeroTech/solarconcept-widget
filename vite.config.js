@@ -21,7 +21,7 @@ export default defineConfig({
         outDir: "docs",
     },
     define: {
-        "process.env": {},
+        "process.env.NODE_ENV": JSON.stringify("production"),
     },
     server: {
         open: "/test.html",
