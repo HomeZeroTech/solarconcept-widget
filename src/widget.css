@@ -5,7 +5,13 @@
   /* Light yellow */
   --sc-text: #1a1a1a;
   --sc-border: #e5e7eb;
-  --sc-border-active: #ffdb00;
+  /* WCAG 1.4.11: borders of tiles and fields need at least 3:1 against white */
+  --sc-border-control: #858585;
+  --sc-border-active: #1a1a1a;
+  --sc-selected-bg: #fff7cc;
+  --sc-muted-text: #4b5563;
+  --sc-error: #b91c1c;
+  --sc-focus: #1a1a1a;
   --sc-radius: 8px;
   --sc-transition: all 0.3s ease;
 }
@@ -64,9 +70,66 @@
 .sc-title {
   font-size: 1.25rem;
   font-weight: 600;
+  margin-top: 0;
   margin-bottom: 24px;
   text-align: center;
   line-height: 1.4;
+}
+
+/* Headings get focus after a step change; no ring needed on a non-interactive heading */
+.sc-widget-container [tabindex="-1"]:focus {
+  outline: none;
+}
+
+.sc-step {
+  font-size: 0.875rem;
+  color: var(--sc-muted-text);
+  text-align: center;
+  margin: 0 0 4px 0;
+}
+
+.sc-visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* WCAG 2.4.7 / 2.4.11: clearly visible keyboard focus on every control */
+.sc-widget-container button:focus-visible,
+.sc-widget-container input:focus-visible {
+  outline: 3px solid var(--sc-focus) !important;
+  outline-offset: 2px;
+}
+
+.sc-hint {
+  font-size: 0.875rem;
+  color: var(--sc-muted-text);
+  margin: 0 0 6px 0;
+}
+
+.sc-hint-center {
+  text-align: center;
+  margin: -16px 0 16px 0;
+}
+
+.sc-required-note {
+  margin: -12px 0 16px 0;
+  text-align: center;
+}
+
+.sc-required {
+  color: var(--sc-error);
+}
+
+.sc-optional {
+  font-weight: 400;
+  color: var(--sc-muted-text);
 }
 
 /* Tiles Grid */
@@ -77,8 +140,15 @@
 }
 
 .sc-tile {
+  /* tiles are real <button>s: reset host/browser button styles */
+  appearance: none;
+  -webkit-appearance: none;
+  font: inherit;
+  color: var(--sc-text);
+  width: 100%;
+  margin: 0;
   background: #ffffff;
-  border: 2px solid var(--sc-border);
+  border: 2px solid var(--sc-border-control);
   border-radius: var(--sc-radius);
   padding: 16px;
   cursor: pointer;
@@ -96,14 +166,16 @@
 }
 
 .sc-tile:hover {
-  border-color: var(--sc-primary);
+  border-color: var(--sc-border-active);
+  background-color: #fffdf0;
 }
 
+/* Selected: dark border + yellow tint + check badge, so the state does not depend on
+   the light yellow alone (WCAG 1.4.1 and 1.4.11) */
 .sc-tile.active {
-  border-color: var(--sc-primary);
-  background-color: #fffdf0;
-  /* Very light yellow tint */
-  box-shadow: 0 0 0 1px var(--sc-primary);
+  border-color: var(--sc-border-active);
+  background-color: var(--sc-selected-bg);
+  box-shadow: 0 0 0 1px var(--sc-border-active);
 }
 
 .sc-tile-content {
@@ -130,7 +202,7 @@
   right: 8px;
   width: 20px;
   height: 20px;
-  background-color: var(--sc-primary);
+  background-color: var(--sc-border-active);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -163,31 +235,76 @@
 .sc-input {
   width: 100%;
   padding: 12px;
-  border: 1px solid var(--sc-border);
+  font-family: inherit;
+  color: var(--sc-text);
+  background: #ffffff;
+  border: 1px solid var(--sc-border-control);
   border-radius: var(--sc-radius);
   font-size: 1rem;
   transition: var(--sc-transition);
 }
 
+.sc-input::placeholder {
+  /* WCAG 1.4.3: placeholder text needs 4.5:1 */
+  color: #6b7280;
+  opacity: 1;
+}
+
 .sc-input:focus {
-  outline: none;
-  border-color: var(--sc-primary);
-  box-shadow: 0 0 0 3px rgba(255, 219, 0, 0.2);
+  border-color: var(--sc-border-active);
+  box-shadow: 0 0 0 3px rgba(255, 219, 0, 0.45);
 }
 
 .sc-input.error {
-  border-color: #ef4444;
+  border-color: var(--sc-error);
+  border-width: 2px;
 }
 
 .sc-error-msg {
-  color: #ef4444;
-  font-size: 0.75rem;
+  color: var(--sc-error);
+  font-size: 0.875rem;
   margin-top: 4px;
+}
+
+.sc-submit-error {
+  color: var(--sc-error);
+  background: #fef2f2;
+  border: 1px solid var(--sc-error);
+  border-radius: var(--sc-radius);
+  padding: 12px;
+  font-size: 0.875rem;
+}
+
+.sc-house-row {
+  display: flex;
+  gap: 10px;
+}
+
+.sc-house-number {
+  flex: 1;
+  min-width: 0;
+}
+
+.sc-house-addition {
+  width: 140px;
+  flex-shrink: 0;
 }
 
 .sc-row {
   display: flex;
   gap: 16px;
+}
+
+/* WCAG 1.4.10: fields stack on narrow screens and at high zoom */
+@media (max-width: 480px) {
+  .sc-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .sc-house-addition {
+    width: 120px;
+  }
 }
 
 .sc-col {
@@ -210,6 +327,7 @@
 }
 
 .sc-btn {
+  font-family: inherit;
   background-color: var(--sc-primary);
   color: var(--sc-text);
   border: none;
@@ -234,7 +352,7 @@
 
 .sc-btn-back {
   background: transparent;
-  color: #6b7280;
+  color: var(--sc-muted-text);
   padding: 12px 16px;
 }
 
@@ -246,7 +364,7 @@
 /* Disclaimer */
 .sc-disclaimer {
   font-size: 0.75rem;
-  color: #6b7280;
+  color: var(--sc-muted-text);
   text-align: center;
   margin-top: 12px;
   line-height: 1.4;
@@ -394,4 +512,19 @@
   line-height: 1.6;
   max-width: 400px;
   margin: 0;
+}
+/* Respect users who ask for less motion */
+@media (prefers-reduced-motion: reduce) {
+  .sc-widget-container *,
+  .sc-widget-container *::before,
+  .sc-widget-container *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .sc-checkmark-circle,
+  .sc-checkmark-check {
+    stroke-dashoffset: 0;
+  }
 }
