@@ -37,8 +37,8 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: 600px;
-  /* Fixed height for consistency */
+  /* Grows with its content instead of an inner scroll area (matches the Solar Concept site CSS) */
+  min-height: 600px;
   position: relative;
   /* Ensure containment */
 }

@@ -473,29 +473,34 @@ function App({ demo = false, headingLevel = 3 }) {
         </div>
       </div>
 
-      <Field
-        id={`${uid}-email`}
-        label="E-mailadres"
-        type="email"
-        autoComplete="email"
-        value={formData.email}
-        onChange={(e) => handleUpdate('email', e.target.value)}
-        placeholder="naam@voorbeeld.nl"
-        error={errors.email}
-        inputRef={el => { fieldRefs.current.email = el; }}
-      />
-
-      <Field
-        id={`${uid}-phone`}
-        label="Telefoonnummer"
-        type="tel"
-        autoComplete="tel"
-        value={formData.phone}
-        onChange={(e) => handleUpdate('phone', e.target.value)}
-        placeholder="06 12345678"
-        error={errors.phone}
-        inputRef={el => { fieldRefs.current.phone = el; }}
-      />
+      <div className="sc-row">
+        <div className="sc-col">
+          <Field
+            id={`${uid}-email`}
+            label="E-mailadres"
+            type="email"
+            autoComplete="email"
+            value={formData.email}
+            onChange={(e) => handleUpdate('email', e.target.value)}
+            placeholder="naam@voorbeeld.nl"
+            error={errors.email}
+            inputRef={el => { fieldRefs.current.email = el; }}
+          />
+        </div>
+        <div className="sc-col">
+          <Field
+            id={`${uid}-phone`}
+            label="Telefoonnummer"
+            type="tel"
+            autoComplete="tel"
+            value={formData.phone}
+            onChange={(e) => handleUpdate('phone', e.target.value)}
+            placeholder="06 12345678"
+            error={errors.phone}
+            inputRef={el => { fieldRefs.current.phone = el; }}
+          />
+        </div>
+      </div>
 
       <div role="alert" className="sc-alert-slot">
         {submitError && <div className="sc-submit-error"><span aria-hidden="true">⚠ </span>{submitError}</div>}
